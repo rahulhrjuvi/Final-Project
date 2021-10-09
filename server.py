@@ -2,6 +2,9 @@
 import requests
 import os
 import json
+# To detect the language in text
+# Reference: https://stackoverflow.com/questions/39142778/python-how-to-determine-the-language
+import langid
 
 bearer_token = os.environ.get("BEARER_TOKEN")
 
@@ -35,16 +38,19 @@ if __name__ == "__main__":
         for response_line in response.iter_lines():
             if response_line:
                 # Call the data we really need
+                # Reference: https://www.kite.com/python/answers/how-to-extract-a-value-from-json-in-python
                 json_response = json.loads(response_line)["data"]
                 # Store time and text into two variables
-                res_time = json_response["created_at"]
-                res_text = json_response["text"]
-                # Combine the time and text, make them into one line
-                res = res_time + "  ,  " + res_text
-                f.write(res)
-                f.write("\n")
-                # To see what's in the file, we set a print function
-                print(res)
+                # We only want text in English, and thus we need a filter
+                if langid.classify(json_response["text"])[0] == 'en':
+                    res_time = json_response["created_at"]
+                    res_text = json_response["text"]
+                    # Combine the time and text, make them into one line
+                    res = res_time + "  ,  " + res_text + "\n"
+                    f.write(res)
+                    # To see what's in the file, we set a print function
+                    print(res)
+                 
             if response.status_code != 200:
                 raise Exception(
                     "Request returned an error: {} {}".format(
