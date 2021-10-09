@@ -23,6 +23,12 @@ def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {bearer_token}"
     r.headers["User-Agent"] = "v2SampledStreamPython"
     return r
+    
+def parse_timestamp(s):
+    date = s.split('T')[0]
+    time = s.split('T')[1].split('.000Z')[0].replace(":", "-")
+    timestamp = date + "-" + time
+    return timestamp
 
 if __name__ == "__main__":
     url = create_url()
@@ -43,7 +49,7 @@ if __name__ == "__main__":
                 # Store time and text into two variables
                 # We only want text in English, and thus we need a filter
                 if langid.classify(json_response["text"])[0] == 'en':
-                    res_time = json_response["created_at"]
+                    res_time = parse_timestamp(json_response["created_at"])
                     res_text = json_response["text"]
                     # Combine the time and text, make them into one line
                     res = res_time + "  ,  " + res_text + "\n"
