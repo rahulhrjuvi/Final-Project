@@ -54,7 +54,6 @@ if __name__ == "__main__":
             if response.status_code != 200:
                 raise Exception(
                     "Request returned an error: {} {}".format(
-                    response.status_code, response.text)
-                )
+                    response.status_code, response.text))
         f.close()
         timeout += 1
