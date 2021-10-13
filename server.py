@@ -50,9 +50,10 @@ if __name__ == "__main__":
                 # We only want text in English, and thus we need a filter
                 if langid.classify(json_response["text"])[0] == 'en':
                     res_time = parse_timestamp(json_response["created_at"])
-                    res_text = json_response["text"]
+                    res_text = json_response["text"].splitlines()
+                    res_text = ''.join(str(e) for e in res_text)
                     # Combine the time and text, make them into one line
-                    res = res_time + "  ,  " + res_text + "\n"
+                    res = res_time + "," + res_text + "\n"
                     f.write(res)
                     # To see what's in the file, we set a print function
                     print(res)
