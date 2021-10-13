@@ -25,6 +25,7 @@ def bearer_oauth(r):
     return r
     
 def parse_timestamp(s):
+    # Delete the unnecessary part of the date and time, change the colons to the bars
     date = s.split('T')[0]
     time = s.split('T')[1].split('.000Z')[0].replace(":", "-")
     timestamp = date + "-" + time
