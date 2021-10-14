@@ -54,7 +54,7 @@ if __name__ == "__main__":
                     res_text = json_response["text"].splitlines()
                     res_text = ''.join(str(e) for e in res_text)
                     # Combine the time and text, make them into one line
-                    res = res_time + "," + res_text + "\n"
+                    res = res_time + ", " + res_text + "\n"
                     f.write(res)
                     # To see what's in the file, we set a print function
                     print(res)
