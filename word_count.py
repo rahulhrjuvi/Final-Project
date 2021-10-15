@@ -26,7 +26,7 @@ data = data[1::]
 #adding in spaces before and after to avoid this is vs is, tweets preprocessing
 for i in range(len(data)):
     data[i] = ' '+data[i]+' '
-    #ruiyu's code
+    #ruiyu's code to preprocess tweets
 
 #Computing final count for word/phrase using Python's in built count function
 myword = word
