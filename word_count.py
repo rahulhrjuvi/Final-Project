@@ -9,6 +9,7 @@ parser.add_argument("--word", help="Computes Word/Phrase Frequency.", default='G
 args = parser.parse_args()
 word = args.word
 print ("Computing Frequency for '",word,"'!" )
+word = ' '+word+' ' 
 
 
 #Getting all text from tweets.txt and converting to a string called 'data'
@@ -22,6 +23,10 @@ data = data.replace('\n','')
 data = re.split('[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9], ',data)
 data = data[1::]
 
+#adding in spaces before and after to avoid this is vs is, tweets preprocessing
+for i in range(len(data)):
+    data[i] = ' '+data[i]+' '
+    #ruiyu's code
 
 #Computing final count for word/phrase using Python's in built count function
 myword = word
