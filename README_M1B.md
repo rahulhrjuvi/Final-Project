@@ -2,9 +2,9 @@ GENBUS760 - Final Project
 
 Group 8
 
-Milestone1 
-Part B word_conut 
-Moiz & Ruiyu 10/15/2021
+Milestone1  
+Part B word_count  
+Moiz & Ruiyu 10/15/2021 
 
 Put the document "tweets.txt" and "word_count.py" under the same folder, and run the .py file in the terminal after changing directory to that folder.
 
