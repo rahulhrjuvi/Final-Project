@@ -23,7 +23,7 @@ parser.add_argument("--word", help="Computes Word/Phrase Frequency.", default=""
 args = parser.parse_args()
 word = args.word
 if word == '':
-    print ("You need to use --word and put something in the argument!")
+    print ("You need to use <python word_count.py --word 'xxx'> and put the word or phrases you want to compute frequency in the argument 'xxx'!")
     sys.exit()
 print ("Computing Frequency for '",word,"'!" )
 word = ' '+word+' ' 
