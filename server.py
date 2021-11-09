@@ -8,7 +8,7 @@ import langid
 import config
 import argparse
 
-bearer_token = os.environ.get("BEARER_TOKEN")
+bearer_token = config.BEARER_TOKEN
 
 # Call the url
 # Since we need the time, give endpoint as ?tweet.fields=created_at, based on Twitter API documentation
