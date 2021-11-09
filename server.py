@@ -5,6 +5,8 @@ import json
 # To detect the language in text
 # Reference: https://stackoverflow.com/questions/39142778/python-how-to-determine-the-language
 import langid
+import config
+import argparse
 
 bearer_token = os.environ.get("BEARER_TOKEN")
 
@@ -19,7 +21,6 @@ def bearer_oauth(r):
     """
     Method required by bearer token authentication.
     """
-
     r.headers["Authorization"] = f"Bearer {bearer_token}"
     r.headers["User-Agent"] = "v2SampledStreamPython"
     return r
@@ -31,37 +32,48 @@ def parse_timestamp(s):
     timestamp = date + "-" + time
     return timestamp
 
+def parse_json(json_response,f): 
+    if langid.classify(json_response["text"])[0] == 'en':
+        # Store time and text into two variables
+        # We only want text in English, and thus we need a filter
+        res_time = parse_timestamp(json_response["created_at"])
+        res_text = json_response["text"].splitlines()
+        res_text = ''.join(str(e) for e in res_text)
+        res = res_time + ", " + res_text + "\n"
+        f.write(res)
+
 if __name__ == "__main__":
     url = create_url()
     
-    # Create and open the tweets.txt
-    f= open("tweets.txt","w+")
-    time = 0
-    
-    # The original code in "def connect_to_endpoints" in sample string code
-    while True:
-        response = requests.request("GET", url, auth = bearer_oauth, stream = True)
-        print(response.status_code)
-        for response_line in response.iter_lines():
-            if response_line:
-                # Call the data we really need
-                # Reference: https://www.kite.com/python/answers/how-to-extract-a-value-from-json-in-python
-                json_response = json.loads(response_line)["data"]
-                # Store time and text into two variables
-                # We only want text in English, and thus we need a filter
-                if langid.classify(json_response["text"])[0] == 'en':
-                    res_time = parse_timestamp(json_response["created_at"])
-                    res_text = json_response["text"].splitlines()
-                    res_text = ''.join(str(e) for e in res_text)
-                    # Combine the time and text, make them into one line
-                    res = res_time + ", " + res_text + "\n"
-                    f.write(res)
-                    # To see what's in the file, we set a print function
-                    print(res)
-                 
-            if response.status_code != 200:
-                raise Exception(
-                    "Request returned an error: {} {}".format(
-                    response.status_code, response.text))
-        f.close()
-        timeout += 1
+    #Parsing 
+    parser = argparse.ArgumentParser(description='File/API.')
+    parser.add_argument("--file", help="Generates a file of tweets.", default="")
+    args = parser.parse_args()
+    file = args.file
+    if file == '': #### TWIITER API ####
+        print ("Generating a file of tweets using Twitter API")
+        f= open("tweets.txt","w+") # Create and open the tweets.txt
+        # The original code in "def connect_to_endpoints" in sample string code
+        while True:
+            response = requests.request("GET", url, auth = bearer_oauth, stream = True)
+            for response_line in response.iter_lines():
+                if response_line:
+                    json_response = json.loads(response_line)["data"]
+                    parse_json(json_response,f)           
+                if response.status_code != 200:
+                    raise Exception(
+                        "Request returned an error: {} {}".format(
+                        response.status_code, response.text))
+            f.close()
+            timeout += 1
+    else: #### JSON TWEETS ####
+        print ("Generating a file of tweets using JSON Tweets")
+        with open(file) as json_file:
+            f= open("tweets.txt","w+")
+            time = 0
+            json_datas = json.load(json_file)["data"]
+            for json_response in json_datas:
+                parse_json(json_response,f)  
+            f.close()
+        print ("File generated!")
+        
