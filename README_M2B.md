@@ -7,5 +7,5 @@ To read from the Twitter API, please call "python server_postgres.py" on your te
 To read from JSON file, please call "python server_postgres.py --file 'name of file'".
 
 # Examples you can try:
-python server_postgres.py
-python server_postgres.py --file 'tweets.json'
+1. python server_postgres.py
+2. python server_postgres.py --file 'tweets.json'
