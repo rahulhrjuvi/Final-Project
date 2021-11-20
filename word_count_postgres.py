@@ -95,4 +95,3 @@ current_occurences, current_total_count, current_unique_count = calculation_numb
 prob_prior = (1+prior_occurences)/(prior_total_count+prior_unique_count)
 prob_current = (1+current_occurences)/(current_total_count+current_unique_count)
 trendiness_score = np.log(prob_current/prob_prior)
-trendiness_score
