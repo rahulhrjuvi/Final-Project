@@ -1,14 +1,16 @@
 # Structure: Twitter API sample string code
 import requests
 import os
+import sys
 import json
 # To detect the language in text
 # Reference: https://stackoverflow.com/questions/39142778/python-how-to-determine-the-language
 import langid
 import config
+import datetime 
 import argparse
 # To write SQL query
-import psycopg2
+import psycopg
 
 bearer_token = config.BEARER_TOKEN
 
@@ -30,8 +32,8 @@ def bearer_oauth(r):
 def parse_timestamp(s):
     # Delete the unnecessary part of the date and time, change the colons to the bars
     date = s.split('T')[0]
-    time = s.split('T')[1].split('.000Z')[0].replace(":", "-")
-    timestamp = date + "-" + time
+    time = s.split('T')[1].split('.000Z')[0].replace("-", ":")
+    timestamp = date + ":" + time
     return timestamp
 
 def parse_json(json_response): 
@@ -47,7 +49,7 @@ def parse_json(json_response):
 
 # Reset tweets table
 def reset_tweets():
-    connection = psycopg2.connect(user="gb760", dbname = "final_project")
+    connection = psycopg.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()
     cursor.execute("""TRUNCATE tweets""")
     connection.commit()
@@ -57,11 +59,10 @@ def reset_tweets():
 
 # Insert values into tweets table
 def insert_value(insert_query):
-    connection = psycopg2.connect(user="gb760", dbname = "final_project")
+    connection = psycopg.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()
                     
-    query = """INSERT INTO tweets (tweet_id, timestamp, tweet) VALUES (%s,%s,%s)"""
-    print(insert_query)
+    query = """INSERT INTO tweets (tweet_id, time_stamp, tweet) VALUES (%s,%s,%s)"""
                     
     cursor.execute(query, insert_query)
     connection.commit()
@@ -81,7 +82,9 @@ if __name__ == "__main__":
     file = args.file
     
     if file == '': #### TWIITER API ####
-        print ("Write tweets into table using Twitter API")
+        print ("Write tweets into table using Twitter API. It will take around 4 minutes to fetch tweets before exiting the program")
+        current_date_and_time = datetime.datetime.now()
+        print (current_date_and_time)
    
         # Reset the table tweets
         reset_tweets()
@@ -89,6 +92,10 @@ if __name__ == "__main__":
         while True:
             response = requests.request("GET", url, auth = bearer_oauth, stream = True)
             for response_line in response.iter_lines():
+                if datetime.datetime.now()>=current_date_and_time+datetime.timedelta(minutes = 5):
+                    print("exiting")
+                    print(datetime.datetime.now())
+                    sys.exit()
                 if response_line:
                     json_response = json.loads(response_line)["data"]
                     insert_query = parse_json(json_response)
