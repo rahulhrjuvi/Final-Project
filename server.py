@@ -7,6 +7,7 @@ import json
 import langid
 import config
 import argparse
+import sys
 
 bearer_token = config.BEARER_TOKEN
 
@@ -32,7 +33,7 @@ def parse_timestamp(s):
     timestamp = date + "-" + time
     return timestamp
 
-def parse_json(json_response,f): 
+def parse_json(json_response,f, f_backup): 
     if langid.classify(json_response["text"])[0] == 'en':
         # Store time and text into two variables
         # We only want text in English, and thus we need a filter
@@ -41,6 +42,7 @@ def parse_json(json_response,f):
         res_text = ''.join(str(e) for e in res_text)
         res = res_time + ", " + res_text + "\n"
         f.write(res)
+        f_backup.write(res)
 
 if __name__ == "__main__":
     url = create_url()
@@ -53,18 +55,22 @@ if __name__ == "__main__":
     if file == '': #### TWIITER API ####
         print ("Generating a file of tweets using Twitter API")
         f= open("tweets.txt","w+") # Create and open the tweets.txt
+        f_backup= open("tweets_backup.txt","w+") # Create and open the tweets_backup.txt for file backup
         # The original code in "def connect_to_endpoints" in sample string code
         while True:
             response = requests.request("GET", url, auth = bearer_oauth, stream = True)
+            if response.status_code != 200:
+                raise Exception(
+                    "Request returned an error: {} {}".format(
+                    response.status_code, response.text))
             for response_line in response.iter_lines():
                 if response_line:
+                    if (os.path.getsize('tweets.txt')>2000000):
+                        sys.exit()
                     json_response = json.loads(response_line)["data"]
-                    parse_json(json_response,f)           
-                if response.status_code != 200:
-                    raise Exception(
-                        "Request returned an error: {} {}".format(
-                        response.status_code, response.text))
+                    parse_json(json_response, f, f_backup)           
             f.close()
+            f_backup.close()
             timeout += 1
     else: #### JSON TWEETS ####
         print ("Generating a file of tweets using JSON Tweets")
