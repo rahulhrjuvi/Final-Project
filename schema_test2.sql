@@ -24,7 +24,7 @@ create table unique_word_count (
 t timestamp NOT NULL,
 start_of_current_minute timestamp NOT NULL,
 end_of_current_minute timestamp NOT NULL,
-uniq_word_count numeric NUT NULL);
+uniq_word_count numeric NOT NULL);
 
 /* creating a table called word_prior_count
 
