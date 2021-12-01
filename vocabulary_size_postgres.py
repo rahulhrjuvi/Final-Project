@@ -86,11 +86,11 @@ def reset_uniq_word_count_table():
 reset_uniq_word_count_table()  
 
 
-# insert values into niq_word_count table
+# insert values into uniq_word_count table
 def insert_value(insert_query_values):
     connection = psycopg2.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()              
-    query = """INSERT INTO word_current_count (t,start_of_current_minute,end_of_current_minute,uniq_word_count)
+    query = """INSERT INTO uniq_word_count (t,start_of_current_minute,end_of_current_minute,uniq_word_count)
 VALUES (%s,%s,%s,%s)"""           
     cursor.execute(query, insert_query_values)
     connection.commit()           
