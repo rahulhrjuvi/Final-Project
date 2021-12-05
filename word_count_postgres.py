@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # Milestone 2 Part C word_count_postgres.py
+
+###################### import required packages ######################
 
 import argparse
 import sys
@@ -11,13 +10,10 @@ from datetime import datetime, timedelta
 import numpy as np
 import psycopg2
 
+###################### defined functions ######################
 
-# In[7]:
-
-
-# Cleaning the tweets
 # reference link: https://gist.github.com/aniruddha27/8d112b87ff4014b80f606dc68080066d#file-preprocess_tweets-py
-def preprocess(tweet):
+def preprocess(tweet):                                           # Cleaning the tweets
     # remove links
     tweet = re.sub(r'http\S+', '', tweet)
     # remove mentions
@@ -29,88 +25,51 @@ def preprocess(tweet):
     tweet = tweet.lower()
     return tweet
 
-
-# In[14]:
-
-
-# open a connection (close it later)
-conn = psycopg2.connect(database="final_project", user="gb760")
-# create a cursor
-cur = conn.cursor()
-# execute a SQL command
-query = """
-select * from tweets;
-"""
-cur.execute(query)
-
-#get the tweets content list - each row of the table tweets is a tuple
-tweets_lst = cur.fetchall()
-
-
-# In[22]:
-
-
-time_lst = [tweets_rows[1] for tweets_rows in tweets_lst]
-text_lst = [tweets_rows[2] for tweets_rows in tweets_lst]
-
-
-# In[51]:
-
-
-#In order to have both current and prior tweet texts, 
-#our group assume the time t is two minutes after the time we run server_postgres.py, 
-#and the time we run the py file is approximately equal to the time of posting the first tweet in our tweets table.
-
 #https://stackoverflow.com/questions/13071384/ceil-a-datetime-to-next-quarter-of-an-hour
-def ceil_dt(dt, delta):
+def ceil_dt(dt, delta):                                           #get the start of minute
     return datetime.min + math.ceil((dt - datetime.min) / delta) * delta
 
-t = time_lst[0]+timedelta(minutes = 2)
-start_of_current = ceil_dt(t, timedelta(minutes=-1)) 
-end_of_current = ceil_dt(t, timedelta(minutes=1)) - timedelta(seconds = 1)
-####start_of_prior = ceil_dt(time_lst[0], timedelta(minutes=1))
-####end_of_prior = start_of_prior + timedelta(seconds = 59)
-
-
-# In[52]:
-
-
-def current_text(text, start_of_current, end_of_current):
+def current_text_fnc(text, start_of_current, end_of_current):     #get unprocessed tweet text list of current minute at t
     current_text = []
     for i in range(len(text)):
         if time_lst[i]>=start_of_current and time_lst[i]<=end_of_current:
             current_text.append(text[i])
     return current_text
 
-#unprocessed tweet text list of current minute at t
-current_text = current_text(text_lst, start_of_current, end_of_current)
-
-
-# In[126]:
-
-
-def calculation_numbers(text, my_input):
+def current_p_count(text, my_input):
     #get a list of processed words.
     tweets_string = ' '.join(text) 
-    tweets_string = preprocess(tweets_string) #put all processed tweets texts into a single string.
-    tweet_words = tweets_string.split(' ') #split the string into a list with space.
-    tweet_words = list(filter(lambda a: a != '', tweet_words)) #drop the ''.
-    tweet_words = [item for item in tweet_words if item[0] != '#'] #drop the remaining sign '#'.
-    #if input is phrase - Consider only the phrases of two words here.
-    if ' ' in my_input:
+    tweets_string = preprocess(tweets_string)                       #put all processed tweets texts into a single string.
+    tweet_words = tweets_string.split(' ')                          #split the string into a list with space.
+    tweet_words = list(filter(lambda a: a != '', tweet_words))      #drop the ''.
+    tweet_words = [item for item in tweet_words if item[0] != '#']  #drop hashtags start with '#'.
+    
+    phrase_list = []
+    for i in range(len(tweet_words)-1):
+        phrase_list.append(tweet_words[i:i+2])
+    phrases = len(phrase_list)-len(text)+1
+    
+    if ' ' in my_input:                                             #my_input is 2 word phrases
         my_input = my_input.split(' ')
-        phrase_list = []
-        for i in range(len(tweet_words)-1):
-            phrase_list.append(tweet_words[i:i+2]) #a processed list of all the two-word phrases
         count = phrase_list.count(my_input)
-        ####phrase_list_set = set(tuple(x) for x in phrase_list)
-        return count, len(phrase_list) ####, len(phrase_list_set)
-    else:
-        ####tweet_words_set = set(tweet_words)
-        count = 0
-        count += tweets_string.count(my_input)
-        return count, len(tweet_words) ####, len(tweet_words_set)
+        return(count)
+    else:                                                           #my_input is single word
+        count = tweets_string.count(my_input) 
+        return(count)
+    
+def insert_value(insert_query_values):                              #store each search record in schema table word_current_count
+    connection = psycopg2.connect(user="gb760", dbname = "final_project")
+    cursor = connection.cursor()              
+    query = """INSERT INTO word_current_count (p,start_of_current_minute,p_current_freq)
+VALUES (%s,%s,%s)"""
+    cursor.execute(query, insert_query_values)
+    connection.commit()           
+    if connection: #close the cursor and connection to PostgreSQL.
+        cursor.close()
+        connection.close()
 
+###################### argparse ######################
+        
 #Parsing functionality
 parser = argparse.ArgumentParser(description='Computes Word/Phrase Frequency.')
 parser.add_argument("--word", help="Computes Word/Phrase Frequency.", default="")
@@ -118,65 +77,46 @@ args = parser.parse_args()
 word = args.word
 word = word.lower() #transform everything we input to lowercases.
 if word == '':
-    print ("You need to use <python3 word_count_postgres.py --word 'xxx'> and put the word or phrases you want to compute frequncy in the argument 'xxx'!")
+    print ("You need to use <python word_count_postgres.py --word 'xxx'> in the terminal in python3 and put the word or phrases you want to compute frequncy in the argument 'xxx'!")
     sys.exit()
 print ("Computing Frequency for '",word,"'!" )
 
-#get the no. of times p was seen in the current minute at t and total no. of phrases seen in the current minute at t.
-current_p_occurences, current_total_count = calculation_numbers(current_text,word)
+###################### main part ######################
 
+conn = psycopg2.connect(database="final_project", user="gb760")        #open a connection (close it later)
+cur = conn.cursor()                                                    #create a cursor
+query = """select time_stamp from tweets order by 1 desc limit 1;"""   #execute a SQL command
+cur.execute(query)
+tm = cur.fetchall()                                                    #get the latest time_stamp as a list, e.g. [(datetime(2021,12,5,15,22,53),)]
+cur.close()                                                            #close the cursor and connection
+conn.close()
+#The time t is the time of posting the lastest tweet when we run the code of open a connection select time_stamp from tweets, during running the server_postgres.py
+t = tm[0][0]                                                           #e.g.datetime(2021,12,5,15,22,53)
+start_of_current = ceil_dt(t, timedelta(minutes=-1))                   #e.g.datetime(2021,12,5,15,22)
+end_of_current = t
 
-# In[124]:
-
-
-#print the frequency of p in the current minute at t
-
-print("The word/phrase frequency for '", word, "' in the current minute t = ", str(t), "is", current_p_occurences, "!")
-
-
-# In[128]:
-
-
-# reset word_current_count table
-def reset_word_current_count_table():
-    connection = psycopg2.connect(user="gb760", dbname = "final_project")
-    cursor = connection.cursor()
-    cursor.execute("""TRUNCATE word_current_count""")
-    connection.commit()
-    if connection:
-        cursor.close()
-        connection.close()
-
-reset_word_current_count_table()  
-
-
-# In[130]:
-
-
-# insert values into word_current_count table
-def insert_value(insert_query_values):
-    connection = psycopg2.connect(user="gb760", dbname = "final_project")
-    cursor = connection.cursor()              
-    query = """INSERT INTO word_current_count (p,t,start_of_current_minute,end_of_current_minute,p_current_freq,total_p_current)
-VALUES (%s,%s,%s,%s,%s,%s)"""           
-    cursor.execute(query, insert_query_values)
-    connection.commit()           
-    if connection:
-        cursor.close()
-        connection.close()
-
-insert_query_values = (word,t,start_of_current,end_of_current,current_p_occurences,current_total_count)
-insert_value(insert_query_values)
-print('Successfully insert all information needed for calculating frequency of p at time t!')
-
-
-# print the record of the word_current_count table -- not necessarily to print this.
-cur.execute("SELECT * FROM word_current_count")
-records = cur.fetchall()
-print(records)
-conn.commit()
-
-#close the cursor and connection to PostgreSQL.
+conn = psycopg2.connect(database="final_project", user="gb760")
+cur = conn.cursor()
+query = """select * from tweets where time_stamp>='"+str(start_of_current)+"' and time_stamp<='"+str(end_of_current)+"';"""
+cur.execute(query)
+tweets = cur.fetchall()                                                 #a list of [('tweet_id',t,'tweet'),(),...] in the current minute at t
 cur.close()
 conn.close()
+#get a list of unprocessed tweet text in current minute at t
+text_lst = [tweets[x][2] for x in range(len(tweets))]
+
+#get the no. of times p was seen in the current minute at t
+my_input = word
+current_text = current_text_fnc(text_lst, start_of_current, end_of_current)
+current_occurences = calculation_numbers(current_text,my_input)
+#print the frequency of p in the current minute at t
+print("The word/phrase frequency for '", my_input, "' in the current minute ", str(start_of_current), "is", current_occurences, "!")
+
+# insert values into word_current_count table
+insert_query_values = (my_input,start_of_current,current_occurences)
+insert_value(insert_query_values)
+print('Insertion into table done!')
+
+
+
 
