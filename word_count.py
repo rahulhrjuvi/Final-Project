@@ -22,6 +22,7 @@ parser = argparse.ArgumentParser(description='Computes Word/Phrase Frequency.')
 parser.add_argument("--word", help="Computes Word/Phrase Frequency.", default="")
 args = parser.parse_args()
 word = args.word
+word = word.lower() #transform everything we input to lowercases
 if word == '':
     print ("You need to use <python3 word_count.py --word 'xxx'> and put the word or phrases you want to compute frequency in the argument 'xxx'!")
     sys.exit()

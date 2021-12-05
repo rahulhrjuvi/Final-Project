@@ -9,7 +9,6 @@ import langid
 import config
 import datetime 
 import argparse
-# To write SQL query
 import psycopg
 
 bearer_token = config.BEARER_TOKEN
@@ -52,6 +51,7 @@ def reset_tweets():
     connection = psycopg.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()
     cursor.execute("""TRUNCATE tweets""")
+    cursor.execute("""TRUNCATE tweets_backup""")
     connection.commit()
     if connection:
         cursor.close()
@@ -71,6 +71,20 @@ def insert_value(insert_query):
         cursor.close()
         connection.close()
 
+# Insert values into tweets backup table
+def insert_value_backup(insert_query):
+    connection = psycopg.connect(user="gb760", dbname = "final_project")
+    cursor = connection.cursor()
+                    
+    query = """INSERT INTO tweets_backup (tweet_id, time_stamp, tweet) VALUES (%s,%s,%s)"""
+                    
+    cursor.execute(query, insert_query)
+    connection.commit()
+                    
+    if connection:
+        cursor.close()
+        connection.close()
+
 if __name__ == "__main__":
     
     url = create_url()
@@ -82,25 +96,19 @@ if __name__ == "__main__":
     file = args.file
     
     if file == '': #### TWIITER API ####
-        print ("Write tweets into table using Twitter API. It will take around 4 minutes to fetch tweets before exiting the program")
-        current_date_and_time = datetime.datetime.now()
-        print (current_date_and_time)
-   
+        print ("Write tweets into table using Twitter API!")
         # Reset the table tweets
         reset_tweets()
         # The original code in "def connect_to_endpoints" in sample string code  
         while True:
             response = requests.request("GET", url, auth = bearer_oauth, stream = True)
             for response_line in response.iter_lines():
-                if datetime.datetime.now()>=current_date_and_time+datetime.timedelta(minutes = 5):
-                    print("exiting")
-                    print(datetime.datetime.now())
-                    sys.exit()
                 if response_line:
                     json_response = json.loads(response_line)["data"]
                     insert_query = parse_json(json_response)
                     if insert_query: 
                         insert_value(insert_query)
+                        insert_value_backup(insert_query)
                         
                 if response.status_code != 200:
                     raise Exception(
