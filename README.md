@@ -44,7 +44,8 @@ python word_count.py --word 'we are'
 ```
 
 ### Part C
-Put the document "tweets.txt" and "vocabulary_size.py" under the same folder, and run the .py file in the terminal in python3 after changing directory to that folder. After running the .py file, it will print the number of unique words used in all the tweets stored in tweets.txt.  
+Put the document "tweets.txt" and "vocabulary_size.py" under the same folder, and run the .py file in the terminal in python3 after changing directory to that folder.   
+After running the .py file, it will print the number of unique words used in all the tweets stored in tweets.txt.  
 Example you can try:
 ```
 python vocabulary_size.py
@@ -92,20 +93,19 @@ Keep running the server_postgres.py in the terminal in python3:
 ```
 python server_postgres.py
 ```
-Then, run the word_count_postgres.py file in the terminal in python3.  
-You have to type in "--word 'xxx'", input the word or phrases you would like to search in the quotation marks to get the result of count.
+Then, run the word_count_postgres.py file in the terminal in python3. It will print the frequency of p in the current minute at t and store each record of your search into schema table word_current_count.  
 
+You have to type in "--word 'xxx'", input the word or phrases you would like to search in the quotation marks to get the result of count.  
 If you do not type in anything, it will jump out a sentence to remind you of that!  
 Here are some examples of commands you can try:
 ```
 python word_count_postgres.py
 python word_count_postgres.py --word 'we'
-python word_count_postgres.py --word 'we are'
 python word_count_postgres.py --word 'We'
+python word_count_postgres.py --word 'we are'
 ```
 
-This will also store each record of your search into the schema table word_current_count.  
-If you would like to search for the same word/phrase more than once to store the record in the word_current_count table for further analysis, please wait for at least one minute between searches.  
+You can search for the same word/phrase more than once to store the record of different time in the word_current_count table for further analysis.  
 For example, to see the word_current_count table:
 ```
 psql
@@ -113,14 +113,34 @@ select * from word_current_count;
 \q
 ```
 An example of word_current_count table:  
-|p       | start_of_current_minute | p_current_freq|  
-|:-------|:-----------------------:|--------------:|
-| we     | 2021-12-05 16:10:00     |            140|  
-| we are | 2021-12-05 16:11:00     |              5|  
-| we     | 2021-12-05 16:24:00     |             91|  
-| we are | 2021-12-05 16:24:00     |              6|  
-| hello  | 2021-12-05 16:24:00     |              2|  
-| hello  | 2021-12-05 16:27:00     |              1| 
+|p       | start_of_current_minute |          t          | p_current_freq|  
+|:-------|:-----------------------:|:-------------------:|--------------:|
+| we     | 2021-12-05 18:07:00     | 2021-12-05 18:07:18 |             21|
+| we     | 2021-12-05 18:07:00     | 2021-12-05 18:07:38 |             81|
+| we     | 2021-12-05 18:07:00     | 2021-12-05 18:07:49 |            115|
+| we are | 2021-12-05 18:09:00     | 2021-12-05 18:09:37 |              1|
+| we are | 2021-12-05 18:09:00     | 2021-12-05 18:09:57 |              2|
+| we are | 2021-12-05 18:10:00     | 2021-12-05 18:10:01 |              0|
 
 
-
+### Part D
+Keep running the server_postgres.py in the terminal in python3.  
+Then run the vocabulary_size_postgres.py file in the terminal in python3. It will print the number of unique words used in the tweets posted in the current minute at t and store the record into schema table unique_words_current_count every time you run the command:
+```
+python vocabulary_size_postgres.py
+```
+For example, to see the unique_words_current_count table:
+```
+psql
+select * from unique_words_current_count;
+\q
+```
+An example of unique_words_current_count table:  
+| start_of_current_minute|          t          | uniq_wph_current_count|
+|:----------------------:|:-------------------:|----------------------:|
+| 2021-12-05 18:10:00    | 2021-12-05 18:10:34 |                   7578|
+| 2021-12-05 18:10:00    | 2021-12-05 18:10:39 |                   8191|
+| 2021-12-05 18:10:00    | 2021-12-05 18:10:51 |                  10281|
+| 2021-12-05 18:11:00    | 2021-12-05 18:11:01 |                    485|
+| 2021-12-05 18:11:00    | 2021-12-05 18:11:19 |                   4330|
+| 2021-12-05 18:11:00    | 2021-12-05 18:11:40 |                   8775|
