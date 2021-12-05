@@ -56,7 +56,7 @@ python vocabulary_size.py
 Please refer to FAILURE.md.
 
 ### Part E
-Please check the tag name: **Milestone I**
+Please check the tag name: **Milestone1**
 
 ## Milestone II
 **Please run the code _in this order_ after input the schema: server_postgres.py > word_count_postgres.py > vocabulary_size_postgres.py > trendiness_score.py**
