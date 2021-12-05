@@ -40,7 +40,8 @@ PRIMARY KEY (p, start_of_current_minute));
 /* creating a table called unique_words_current_count to store the number of unique words used in the tweets posted in the current minute t*/
 drop table if exists unique_words_current_count;
 create table unique_words_current_count (
-start_of_current_minute timestamp PRIMARY KEY NOT NULL,
+start_of_current_minute timestamp NOT NULL,
+t timestamp PRIMARY KEY NOT NULL,
 uniq_wph_current_count numeric NOT NULL);
 
 
