@@ -97,7 +97,7 @@ end_of_current = t
 
 conn = psycopg2.connect(database="final_project", user="gb760")
 cur = conn.cursor()
-query = """select * from tweets where time_stamp>='"+str(start_of_current)+"' and time_stamp<='"+str(end_of_current)+"';"""
+query = "select * from tweets where time_stamp>='"+str(start_of_current)+"' and time_stamp<='"+str(end_of_current)+"';"
 cur.execute(query)
 tweets = cur.fetchall()                                                 #a list of [('tweet_id',t,'tweet'),(),...] in the current minute at t
 cur.close()
@@ -108,7 +108,7 @@ text_lst = [tweets[x][2] for x in range(len(tweets))]
 #get the no. of times p was seen in the current minute at t
 my_input = word
 current_text = current_text_fnc(text_lst, start_of_current, end_of_current)
-current_occurences = calculation_numbers(current_text,my_input)
+current_occurences = current_p_count(current_text,my_input)
 #print the frequency of p in the current minute at t
 print("The word/phrase frequency for '", my_input, "' in the current minute ", str(start_of_current), "is", current_occurences, "!")
 
