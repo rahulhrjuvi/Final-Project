@@ -102,7 +102,8 @@ cur.execute(query)
 tweets = cur.fetchall()                                                 #a list of [('tweet_id',t,'tweet'),(),...] in the current minute at t
 cur.close()
 conn.close()
-#get a list of unprocessed tweet text in current minute at t
+#get a list of current minute time and a list of unprocessed tweet text in current minute at t
+time_lst = [tweets[x][1] for x in range(len(tweets))]
 text_lst = [tweets[x][2] for x in range(len(tweets))]
 
 #get the no. of times p was seen in the current minute at t
