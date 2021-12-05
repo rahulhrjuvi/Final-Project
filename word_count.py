@@ -24,7 +24,7 @@ args = parser.parse_args()
 word = args.word
 word = word.lower() #transform everything we input to lowercases
 if word == '':
-    print ("You need to use <python3 word_count.py --word 'xxx'> and put the word or phrases you want to compute frequency in the argument 'xxx'!")
+    print ("You need to use <python word_count.py --word 'xxx'> in python3 and put the word or phrases you want to compute frequency in the argument 'xxx'!")
     sys.exit()
 print ("Computing Frequency for '",word,"'!" )
 word = ' '+word+' ' 
