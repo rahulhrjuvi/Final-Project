@@ -60,8 +60,8 @@ def vocabulary_size(text):
 def insert_value(insert_query_values):
     connection = psycopg2.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()              
-    query = """INSERT INTO unique_words_current_count (start_of_current_minute,uniq_wph_current_count)
-VALUES (%s,%s)"""           
+    query = """INSERT INTO unique_words_current_count (start_of_current_minute,t,uniq_wph_current_count)
+VALUES (%s,%s,%s)"""           
     cursor.execute(query, insert_query_values)
     connection.commit()           
     if connection:
@@ -96,9 +96,9 @@ text_lst = [tweets[x][2] for x in range(len(tweets))]
 #get and print the number of unique words used in the tweets posted in the current minute at t
 current_text = current_text_fnc(text_lst, start_of_current, end_of_current)
 unique_word_count = vocabulary_size(current_text)
-print("The number of unique words used in the tweets posted in the current minute ", str(start_of_current), "is", unique_word_count, "!")
+print("The number of unique words used in the tweets posted in the current minute", str(start_of_current), "at time t", str(t), "is", unique_word_count, "!")
 
 # insert values into unique_words_current_count table
-insert_query_values = (end_of_current,unique_word_count)
+insert_query_values = (start_of_current,t,unique_word_count)
 insert_value(insert_query_values)
 print('Insertion into table done!')
