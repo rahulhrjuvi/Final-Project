@@ -41,7 +41,7 @@ def calculation_numbers(text, my_input):
     tweets_string = preprocess(tweets_string)
     tweet_words = tweets_string.split(' ')
     tweet_words = list(filter(lambda a: a != '', tweet_words))
-    tweet_words = [item for item in tweet_words if item[0] != '#']# see the issue
+    tweet_words = [item for item in tweet_words if item[0] != '#']
 
     tweet_words_set = set(tweet_words)
 
@@ -80,7 +80,7 @@ if word == '':
 print ("Computing Trendiness Score for '",word,"'!" )
 
 
-# open a connection (make sure to close it later)
+# open a connection (close it later)
 conn = psycopg.connect("dbname=final_project user=gb760")
 cur = conn.cursor()
 query = "select time_stamp from tweets order by 1 desc limit 1;"
