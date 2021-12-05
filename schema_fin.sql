@@ -34,8 +34,9 @@ drop table if exists word_current_count;
 create table word_current_count (
 p VARCHAR(100) NOT NULL,
 start_of_current_minute timestamp NOT NULL,
+t timestamp NOT NULL,
 p_current_freq numeric NOT NULL,
-PRIMARY KEY (p, start_of_current_minute));
+PRIMARY KEY (p, start_of_current_minute, t));
 
 /* creating a table called unique_words_current_count to store the number of unique words used in the tweets posted in the current minute t*/
 drop table if exists unique_words_current_count;
