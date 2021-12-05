@@ -32,20 +32,15 @@ CREATE TABLE p0_backup PARTITION OF tweets_backup FOR VALUES FROM (current_date)
 /* creating a table called word_current_count to store frequency of p in current minute at t*/
 drop table if exists word_current_count;
 create table word_current_count (
-p VARCHAR(100)  PRIMARY KEY NOT NULL,
-t timestamp NOT NULL,
+p VARCHAR(100) NOT NULL,
 start_of_current_minute timestamp NOT NULL,
-end_of_current_minute timestamp NOT NULL,
 p_current_freq numeric NOT NULL,
-total_p_current numeric NOT NULL);
+PRIMARY KEY (p, start_of_current_minute));
 
-/* creating a table called unique_word_count to store the number of unique words used in the tweets posted in the current minute t*/
-drop table if exists uniq_word_count;
-create table uniq_word_count (
-t timestamp NOT NULL,
-start_of_current_minute timestamp NOT NULL,
-end_of_current_minute timestamp NOT NULL,
-uniq_word_count numeric NOT NULL);
+/* creating a table called unique_words_current_count to store the number of unique words used in the tweets posted in the current minute t*/
+drop table if exists unique_words_current_count;
+create table unique_words_current_count (
+start_of_current_minute timestamp PRIMARY KEY NOT NULL,
+uniq_wph_current_count numeric NOT NULL);
 
-/* creating a table called word_prior_count
 
