@@ -90,7 +90,8 @@ cur.execute(query)
 tm = cur.fetchall()                                                    #get the latest time_stamp as a list, e.g. [(datetime(2021,12,5,15,22,53),)]
 cur.close()                                                            #close the cursor and connection
 conn.close()
-#The time t is the time of posting the lastest tweet when we run the code of open a connection select time_stamp from tweets, during running the server_postgres.py
+
+#The time t is the time of the latest posted tweet when we run the code of open a connection to select time_stamp from tweets, during running the server_postgres.py
 t = tm[0][0]                                                           #e.g.datetime(2021,12,5,15,22,53)
 start_of_current = ceil_dt(t, timedelta(minutes=-1))                   #e.g.datetime(2021,12,5,15,22)
 end_of_current = t
@@ -102,6 +103,7 @@ cur.execute(query)
 tweets = cur.fetchall()                                                 #a list of [('tweet_id',t,'tweet'),(),...] in the current minute at t
 cur.close()
 conn.close()
+
 #get a list of current minute time and a list of unprocessed tweet text in current minute at t
 time_lst = [tweets[x][1] for x in range(len(tweets))]
 text_lst = [tweets[x][2] for x in range(len(tweets))]
