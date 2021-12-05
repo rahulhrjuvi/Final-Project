@@ -75,7 +75,7 @@ args = parser.parse_args()
 word = args.word
 word = word.lower() #transform everything we input to lowercases.
 if word == '':
-    print ("You need to use <python3 trendiness_score.py --word 'xxx'> and put the word or phrases you want to compute trendiness score in the argument 'xxx'!")
+    print ("You need to use <python trendiness_score.py --word 'xxx'> in the terminal in python3 and put the word or phrases you want to compute trendiness score in the argument 'xxx'!")
     sys.exit()
 print ("Computing Trendiness Score for '",word,"'!" )
 
