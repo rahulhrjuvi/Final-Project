@@ -41,7 +41,8 @@ PRIMARY KEY (p, start_of_current_minute));
 drop table if exists unique_words_current_count;
 create table unique_words_current_count (
 start_of_current_minute timestamp NOT NULL,
-t timestamp PRIMARY KEY NOT NULL,
-uniq_wph_current_count numeric NOT NULL);
+t timestamp NOT NULL,
+uniq_wph_current_count numeric NOT NULL,
+PRIMARY KEY (start_of_current_minute, t));
 
 
