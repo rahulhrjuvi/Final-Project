@@ -60,8 +60,8 @@ def current_p_count(text, my_input):
 def insert_value(insert_query_values):                              #store each search record in schema table word_current_count
     connection = psycopg2.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()              
-    query = """INSERT INTO word_current_count (p,start_of_current_minute,p_current_freq)
-VALUES (%s,%s,%s)"""
+    query = """INSERT INTO word_current_count (p,start_of_current_minute,t,p_current_freq)
+VALUES (%s,%s,%s,%s)"""
     cursor.execute(query, insert_query_values)
     connection.commit()           
     if connection: #close the cursor and connection to PostgreSQL.
