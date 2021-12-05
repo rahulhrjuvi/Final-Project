@@ -111,13 +111,11 @@ my_input = word
 current_text = current_text_fnc(text_lst, start_of_current, end_of_current)
 current_occurences = current_p_count(current_text,my_input)
 #print the frequency of p in the current minute at t
-print("The word/phrase frequency for '", my_input, "' in the current minute ", str(start_of_current), "is", current_occurences, "!")
+print("The word/phrase frequency for '", my_input, "' in the current minute", str(start_of_current), "at time t", str(t), "is", current_occurences, "!")
 
 # insert values into word_current_count table
-insert_query_values = (my_input,start_of_current,current_occurences)
+insert_query_values = (my_input,start_of_current,t,current_occurences)
 insert_value(insert_query_values)
 print('Insertion into table done!')
-
-
 
 
