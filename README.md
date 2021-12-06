@@ -146,3 +146,21 @@ An example of unique_words_current_count table:
 | 2021-12-05 18:11:00    | 2021-12-05 18:11:01 |                    485|
 | 2021-12-05 18:11:00    | 2021-12-05 18:11:19 |                   4330|
 | 2021-12-05 18:11:00    | 2021-12-05 18:11:40 |                   8775|
+
+### Part E
+Keep running the server_postgres.py in the terminal in python3.  
+Then run the trendiness\_score.py file in the terminal in python3. It will print the trendiness score of the word/phrase you input in the current minute t.
+
+You have to type in "--word 'xxx'", input the word or phrases you would like to compute the trendiness score for in the quotation marks to get the result of score. 
+If you do not type in anything, it will jump out a sentence to remind you of that!  
+Here are some examples of commands you can try:
+```
+python trendiness_score.py --word 'omicron'
+python trendiness_score.py --word 'machine learning'
+python trendiness_score.py --word 'data engineering'
+```
+The output will be in the following form:
+```
+Trendiness score for the minute 2021-12-06 12:30:00 is 2.37
+```
+
