@@ -65,7 +65,7 @@ if __name__ == "__main__":
                     response.status_code, response.text))
             for response_line in response.iter_lines():
                 if response_line:
-                    if (os.path.getsize('tweets.txt')>2000000):
+                    if (os.path.getsize('tweets.txt')>5000000):
                         sys.exit()
                     json_response = json.loads(response_line)["data"]
                     parse_json(json_response, f, f_backup)           
