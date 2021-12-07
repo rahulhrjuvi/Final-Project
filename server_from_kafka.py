@@ -26,7 +26,7 @@ def insert_value(insert_query):
     connection = psycopg.connect(user="gb760", dbname = "final_project")
     cursor = connection.cursor()
                     
-    query = """INSERT INTO tweets (time_stamp, tweet) VALUES (%s,%s)"""
+    query = """INSERT INTO tweets_kafka (time_stamp, tweet) VALUES (%s,%s)"""
                     
     cursor.execute(query, insert_query)
     connection.commit()
