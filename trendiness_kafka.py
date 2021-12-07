@@ -99,7 +99,7 @@ end_of_current = entry_time+timedelta(seconds = 59 - entry_time.second)
 
 while True:
     # execute a SQL command to filter only 2 minutes of data
-    query = "select * from tweets where time_stamp>='"+str(start_of_prior)+"' and time_stamp<='"+str(end_of_current)+"';"
+    query = "select * from tweets_kafka where time_stamp>='"+str(start_of_prior)+"' and time_stamp<='"+str(end_of_current)+"';"
     cur.execute(query)
     
 
@@ -122,7 +122,11 @@ while True:
     prob_prior = (1+prior_occurences)/(prior_total_count+prior_unique_count)
     prob_current = (1+current_occurences)/(current_total_count+current_unique_count)
     trendiness_score = np.log(prob_current/prob_prior)
-    print("Trendiness score for the word/phrase", word, "is", trendiness_score, "at time", start_time+timedelta(seconds=2))
+    print("Trendiness score for the word/phrase", word, "is", trendiness_score, "at time", start_of_current)
+    
+    with open('trendiness_score.csv','a') as fd:
+        fd.write('\n')
+        fd.write(str(start_of_current)[11:16]+', '+str(trendiness_score))
     
     #compute new start and end time
     start_of_prior+= timedelta(minutes = 1)
