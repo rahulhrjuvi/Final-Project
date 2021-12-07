@@ -51,3 +51,11 @@ PRIMARY KEY (start_of_current_minute, t));
 
 CREATE INDEX idx_cnt
 ON unique_words_current_count(uniq_wph_current_count);
+
+/* creating a table called tweets_kafka to store the timestamp and the tweet for tweets stream using kafka*/
+drop table if exists tweets_kafka; 
+CREATE TABLE tweets_kafka (time_stamp timestamp NOT NULL, tweet VARCHAR (2000) NOT NULL);
+
+CREATE INDEX idx_tm_kafka 
+ON tweets_kafka(time_stamp);
+
