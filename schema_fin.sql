@@ -38,6 +38,9 @@ t timestamp NOT NULL,
 p_current_freq numeric NOT NULL,
 PRIMARY KEY (p, start_of_current_minute, t));
 
+CREATE INDEX idx_tm_start 
+ON word_current_count(start_of_current_minute);
+
 /* creating a table called unique_words_current_count to store the number of unique words used in the tweets posted in the current minute t*/
 drop table if exists unique_words_current_count;
 create table unique_words_current_count (
@@ -46,4 +49,5 @@ t timestamp NOT NULL,
 uniq_wph_current_count numeric NOT NULL,
 PRIMARY KEY (start_of_current_minute, t));
 
-
+CREATE INDEX idx_cnt
+ON unique_words_current_count(uniq_wph_current_count);
