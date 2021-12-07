@@ -13,7 +13,7 @@ PARTITION BY RANGE (time_stamp);
 CREATE INDEX idx_tm 
 ON tweets(time_stamp);
 
-CREATE TABLE p0 PARTITION OF tweets FOR VALUES FROM (current_date) TO (current_date + interval '1 day');
+CREATE TABLE p0 PARTITION OF tweets FOR VALUES FROM (current_date + interval '6 hour') TO (current_date + interval '6 hour' + interval '1 day');
 
 /* creating a table called tweets_backup to store tweet_id, timestamp and the tweet in case main table gets deleted */
 drop table if exists tweets_backup;
