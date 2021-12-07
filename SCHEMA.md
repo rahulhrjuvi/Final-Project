@@ -11,6 +11,9 @@
 **tweets_backup**: *tweet_id, time_stamp,* tweet
 > It’s a backup table of tweets. In case that the main table was deleted.
 
+**tweets_kafka**: time_stamp, tweet
+> This table is specifically used for processing tweets stream using Kafka.
+
 ### How?
 In this schema, once we have all the tweets in our data warehouse, we have the word count and unique word frequency in current minute, then we can compute the prior minute and then get the trendiness score.
 
