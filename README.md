@@ -204,3 +204,6 @@ start of current: 12:02:00
 end of current: 12:02:59
 
 Now, the trendiness score is calculated for the above time filters and printed. This process is going to run until eternity, unless stopped forcefully.
+
+### Additional Feature
+When trendiness_kafka.py is started, you should run trendiness_score_plot.py in a terminal window. It will open up a Matplotlib window for real-time trend of the trendiness score. 
