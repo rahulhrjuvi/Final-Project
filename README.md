@@ -7,7 +7,7 @@
 ## Beforehand Set Up
 Please make sure you need all packages needed in the codes. If not, please install them first.
 Important packages include:
-> json, langid, argparse, sys, numpy, re, psycopg, psycopg2
+> json, langid, argparse, sys, numpy, re, psycopg, psycopg2, pause
 
 ## Milestone I
 **Please run the code in this order: server.py > word_count.py > vocabulary_size.py**
