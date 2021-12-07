@@ -27,7 +27,7 @@ PARTITION BY RANGE (time_stamp);
 CREATE INDEX idx_tm_bkp 
 ON tweets_backup(time_stamp);
 
-CREATE TABLE p0_backup PARTITION OF tweets_backup FOR VALUES FROM (current_date) TO (current_date + interval '1 day');
+CREATE TABLE p0_backup PARTITION OF tweets_backup FOR VALUES FROM (current_date + interval '6 hour') TO (current_date + interval '6 hour' + interval '1 day');
 
 /* creating a table called word_current_count to store frequency of p in current minute at t*/
 drop table if exists word_current_count;
