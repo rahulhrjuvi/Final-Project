@@ -28,8 +28,8 @@ def bearer_oauth(r):
 def parse_timestamp(s):
     # Delete the unnecessary part of the date and time, change the colons to the hyphens
     date = s.split('T')[0]
-    time = s.split('T')[1].split('.000Z')[0].replace(":", "-")
-    timestamp = date + "-" + time
+    time = s.split('T')[1].split('.000Z')[0].replace("-", ":")
+    timestamp = date + ":" + time
     return timestamp
 
 def parse_json(json_response): 
@@ -38,8 +38,8 @@ def parse_json(json_response):
     res_time = parse_timestamp(json_response["created_at"])
     res_text = json_response["text"].splitlines()
     res_text = ''.join(str(e) for e in res_text)
-    res = res_time + ", " + res_text
-    return res
+    insert_query = (res_time, res_text)
+    return insert_query
     
 #main function starts here   
 if __name__ == "__main__":
@@ -50,15 +50,16 @@ if __name__ == "__main__":
     parser.add_argument("--file", help="Generates a file of tweets.", default="")
     args = parser.parse_args()
     file = args.file
+    
     if file == '': #### TWIITER API ####
-        print ("Pushing tweets into kafka stream from Twitter API")
+        print ("Pushing tweets into kafka from Twitter API")
         
         producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
                          value_serializer=lambda x:  
                          dumps(x).encode('utf-8'))
         
         # The original code in "def connect_to_endpoints" in sample string code
-        while dat != '':
+        while True:
             response = requests.request("GET", url, auth = bearer_oauth, stream = True)
             if response.status_code != 200:
                 raise Exception(
@@ -69,16 +70,16 @@ if __name__ == "__main__":
                     json_response = json.loads(response_line)["data"]
                     if langid.classify(json_response["text"])[0] == 'en':
                         dat = parse_json(json_response)
-                        producer.send('proj', value=dat) #proj is the topic name
-                          
+                        producer.send('final_project', value=dat) #proj is the topic name
+                        print(dat)
             timeout += 1
             
     else: #### JSON TWEETS ####
-        print ("Pushing tweets into stream using JSON Tweets")
+        print ("Pushing tweets into kafka using JSON Tweets")
         time = 0
         json_datas = json.load(json_file)["data"]
         for json_response in json_datas:
             if langid.classify(json_response["text"])[0] == 'en':
                 dat = parse_json(json_response)
-                producer.send('proj', value=dat)
+                producer.send('final_project', value=dat)
 
