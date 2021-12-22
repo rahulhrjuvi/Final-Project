@@ -2,15 +2,15 @@
 
 > Group 8
 
-> NANCY TAI, COLIN KONG, RUIYU MIN, MOIZ SADIQ AWAN, RAHUL HUNASEHALLI RUDRANNA GOWDA, SIJIA GE
+> RAHUL HUNASEHALLI RUDRANNA GOWDA, NANCY TAI, COLIN KONG, RUIYU MIN, MOIZ SADIQ AWAN, SIJIA GE
 
 ## Beforehand Set Up
-Please make sure you need all packages needed in the codes. If not, please install them first.
+Please make sure you have all packages needed in the codes. If not, please install them first.
 Important packages include:
 > json, langid, argparse, sys, numpy, re, psycopg, psycopg2, pause
 
 ## Milestone I
-**Please run the code in this order: server.py > word_count.py > vocabulary_size.py**
+**Loads tweets from Twitter API onto a text file and computes word counts and vocabulary size in the file**
 ### Part A
 Run the **server.py** file in the terminal in python3.
 
