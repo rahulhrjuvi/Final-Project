@@ -10,22 +10,29 @@ Spikes in the likelihood of seeing a word/phrase relative to its usual likelihoo
 **“Trendiness Score” Formula:**        
 The trendiness of a word/phrase p at time t is computed as follows:
 
-![image](https://user-images.githubusercontent.com/89796629/147373487-36981f5e-b2a1-4109-b346-c952e5c89842.png)
+<img width="490" alt="Formula1" src="https://user-images.githubusercontent.com/89796629/147373766-06b736c0-f82e-449d-a7ce-8efd68cda181.png">
 
 Here, 
 
-![image](https://user-images.githubusercontent.com/89796629/147373508-3b87443d-c7ba-481f-b417-60f2d1813fe8.png)
+<img width="753" alt="Formula2" src="https://user-images.githubusercontent.com/89796629/147373771-c60dd90e-6be9-4964-a653-fb1e78b181b0.png">
 
 ### Approach
 
-Tweets were obtained from the Twitter API.  
-Each individual tweet along with its timestamp was transformed according to our needs and pushed to a Kakfa Queue.  
-At the consumer end, the tweets were consumed and loaded onto a Tweets table in a PostgreSQL Database.  
-Now, when a user wants to find the trendiness score of a word/phrase at any specific time, the user runs the trendiness_kafka.py script with the word or phrase as input.   
-The tredniness score of the word/phrase is computed using the formula shown above and displayed.   
-This process is excuted every minute until the code is force stopped.    
-Finally, a plot of trendiness scores every minute is plotted across each minute.    
+Tweets are obtained from the Twitter API.  
+
+Each individual tweet along with its timestamp is transformed according to our needs and pushed to a Kakfa Queue.  
+
+At the consumer end, the tweets are consumed and loaded onto a Tweets table in a PostgreSQL Database.  
+
+Now, when a user wants to find out the trendiness score of a word/phrase at any specific time, the user runs the trendiness_kafka.py script with the word/phrase as input.   
+
+The trendiness score of the word/phrase is computed using the formula shown above and displayed.  
+
+This process is executed every minute until the code is force stopped.    
+
+Finally, trendiness scores are plotted across each minute.    
+
 The same is shown below:
 
-
+<img width="450" alt="Trendiness" src="https://user-images.githubusercontent.com/89796629/147373692-b2ebee08-0eec-4734-ad1a-a71d0145ad8e.png">
 
