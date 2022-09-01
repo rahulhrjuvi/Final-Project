@@ -8,11 +8,11 @@ Spikes in the likelihood of seeing a word/phrase relative to its usual likelihoo
 <img width="300" alt="Trend" src="https://user-images.githubusercontent.com/89796629/147373404-6ea2b21a-bc21-4581-9838-f25f3488b0dd.png">
 
 **“Trendiness Score” Formula:**        
-The trendiness of a word/phrase p at time t is computed as follows. Note: V is the count of unique words/phrases:
+The trendiness of a word/phrase p at time t is computed as follows.:
 
 <img width="490" alt="Formula1" src="https://user-images.githubusercontent.com/89796629/147373766-06b736c0-f82e-449d-a7ce-8efd68cda181.png">
 
-Here, 
+Here, V is the count of unique words/phrases and,
 
 <img width="753" alt="Formula2" src="https://user-images.githubusercontent.com/89796629/147373771-c60dd90e-6be9-4964-a653-fb1e78b181b0.png">
 
